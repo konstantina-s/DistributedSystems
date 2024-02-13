@@ -1,4 +1,4 @@
-# DistributedSystems
+# Distributed Systems Project - Intrusion Detection System
 Project for the course Distributed systems using RabbitMQ to simulate an intrusion detection system.
 Student ID 201519.
 * The producers create messages (logs) of successful and unsuccessful login attempts.

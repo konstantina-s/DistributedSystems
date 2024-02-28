@@ -34,6 +34,7 @@ public class ProducerThread extends Thread {
                     log =  dtf.format(now) + " Employee Device ID: " + ID + "  status: <" + log + ">";
                     channel.basicPublish("e1", "i" + i % 10, null, log.getBytes());
                     System.out.println(log);
+                    break;
                 } else {
                     //Count the number of failed log per thread
                     failedLogCount++;

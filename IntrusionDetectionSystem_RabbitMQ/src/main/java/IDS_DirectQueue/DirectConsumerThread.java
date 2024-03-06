@@ -15,6 +15,12 @@ public class DirectConsumerThread extends Thread {
         this.threadName = threadName;
     }
 
+    String ID (String log){
+        String[] ID = log.split("ID");
+        return ID[1].replaceAll("[^0-9]", "");
+
+    }
+
     public void run() {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
@@ -32,17 +38,19 @@ public class DirectConsumerThread extends Thread {
             System.out.println(queueName + " has started listening for logs...");
 
             //Response messages
-            String confirmMessage = "Login credentials received from Employee Device ID: ";
-            String denyMessage = "Login credentials incorrect from Employee Device ID: ";
+            String confirmMessage = " Login credentials received";
+            String denyMessage = " Login credentials incorrect";
 
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String log = new String(delivery.getBody(), "UTF-8");
                 System.out.println(threadName + " Received <" + log + ">");
+                //Extracting the Employee ID for the queueKey
+                String employeeID = ID(log);
                 //According to the log, the consumer sends a response to the appropriate employee device
                 if (log.contains("SUCCESSFUL")){
-                    channel.basicPublish("my-topic-exchange", "response.Server", null, confirmMessage.getBytes(StandardCharsets.UTF_8));
+                    channel.basicPublish("my-topic-exchange", "response." + employeeID, null, ("Employee ID: " + employeeID + confirmMessage).getBytes(StandardCharsets.UTF_8));
                 }else{
-                    channel.basicPublish("my-topic-exchange", "response.Server", null, denyMessage.getBytes(StandardCharsets.UTF_8));
+                    channel.basicPublish("my-topic-exchange", "response." + employeeID, null, ("Employee ID: " + employeeID + denyMessage).getBytes(StandardCharsets.UTF_8));
                 }
             };
 

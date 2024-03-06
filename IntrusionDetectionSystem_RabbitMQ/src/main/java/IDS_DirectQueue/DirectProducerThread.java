@@ -28,11 +28,11 @@ public class DirectProducerThread extends Thread {
 
             //Queue for credential confirmation responses form consumer
             channel.queueDeclare("Response", true, false, false, null);
-            channel.queueBind("Response", "my-topic-exchange", "response.*");
+            channel.queueBind("Response", "my-topic-exchange", "response." + ID);
 
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String sMessage = new String(delivery.getBody(), "UTF-8");
-                System.out.println("Received <" + sMessage + ID + ">");
+                System.out.println("Received <" + sMessage + ">");
             };
 
             // Logs to be sent
@@ -65,7 +65,7 @@ public class DirectProducerThread extends Thread {
                         Thread.currentThread().stop();
                         break;
                     }
-                    log = dtf.format(now) + " Employee Device ID: " + ID + "  status: <" + log + ">" + "  status occurred " + failedLogCount + " times";
+                    log = dtf.format(now) + " Employee Device ID: " + ID + "  status: <" + log + ">";
                     //Failed logs are sent to the Failed queue
                     channel.basicPublish("my-topic-exchange", "fail.login", null, log.getBytes());
                     //The response is received from the consumer
